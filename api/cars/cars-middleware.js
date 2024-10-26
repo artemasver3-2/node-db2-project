@@ -3,7 +3,7 @@ const Cars = require('./cars-model');
 const checkCarId = async (req, res, next) => {
   try {
     const id = req.params.id;
-    const car = await Cars.checkCarId(id);
+    const car = await Cars.getById(id);
     if (!car) {
       res.status(404).json({
         message: `car with id: ${id} is not found.`,
@@ -18,36 +18,48 @@ const checkCarId = async (req, res, next) => {
 };
 
 const checkCarPayload = (req, res, next) => {
-  if (!req.body.vin) return next({ status: 400, message: 'vin is missing' });
-  if (!req.body.make) return next({ status: 400, message: 'make is missing' });
-  if (!req.body.model)
-    return next({ status: 400, message: 'model is missing' });
-  if (!req.body.mileage)
-    return next({ status: 400, message: 'mileage is missing' });
-  next();
-};
-
-const checkVinNumberValid = (req, res, next) => {
-  const vin = req.body.vin;
-  if (`${vin}`.length != 17) {
+  if (!req.body.vin) {
     res.status(400).json({
-      message: `vin: ${req.body.vin} is invalid`,
+      message: 'vin is missing',
+    });
+  }
+  if (!req.body.make) {
+    res.status(400).json({
+      message: 'make is missing',
+    });
+  }
+  if (!req.body.model) {
+    res.status(400).json({
+      message: 'model is missing',
+    });
+  }
+  if (!req.body.mileage) {
+    res.status(400).json({
+      message: 'mileage is missing',
     });
   }
   next();
 };
 
+const checkVinNumberValid = (req, res, next) => {
+  const vin = req.body.vin;
+  if (vin.length === 17 && vin != /^[a-z]+$/g) {
+    next();
+  } else {
+    res.status(400).json({
+      message: `vin ${req.body.vin} is invalid`,
+    });
+  }
+};
+
 const checkVinNumberUnique = async (req, res, next) => {
   try {
-    const vin = req.body.vin;
-    const takenVins = await Cars.getByVin(vin);
-
+    const takenVins = await Cars.getByVin(req.body.vin);
     if (!takenVins) {
       next();
     } else {
-      next({
-        status: 400,
-        message: `vin: ${req.body.vin} already exists`,
+      res.status(400).json({
+        message: `vin ${req.body.vin} already exists`,
       });
     }
   } catch (err) {

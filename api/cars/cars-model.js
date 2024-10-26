@@ -9,7 +9,9 @@ const getById = id => {
 }
 
 const getByVin = (vin) => {
-  return db('cars').where('vin', vin)
+  return db('cars')
+  .where('vin', `${vin}`).first()
+
 }
 
 const create = async car => {

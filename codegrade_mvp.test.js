@@ -1,7 +1,39 @@
 const request = require('supertest')
 const server = require('./api/server')
 const db = require('./data/db-config')
-const cars = require('./data/seeds/01-cars')
+const cars = [
+  {
+      vin: '11111111111111111', 
+      make: 'toyota', 
+      model: 'prius',
+      mileage: 213452, 
+      title: 'clean', 
+      transmission: 'manual'
+  },
+  {
+      vin: '23145673428645789', 
+      make: 'toyota', 
+      model: 'corrolla', 
+      mileage: 5631252, 
+      title: 'salvage', 
+  }, 
+  {
+      vin: '13568904064212546', 
+      make: 'ford', 
+      model: 'focus', 
+      mileage: 1500, 
+      title: 'clean', 
+      transmission: 'automatic'
+  },  
+  {
+      vin: '23451637367478562', 
+      make: 'kia', 
+      model: 'soul', 
+      mileage: 1500, 
+  }, 
+];
+
+
 
 beforeAll(async () => {
   await db.migrate.rollback()
