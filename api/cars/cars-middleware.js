@@ -43,7 +43,7 @@ const checkCarPayload = (req, res, next) => {
 
 const checkVinNumberValid = (req, res, next) => {
   const vin = req.body.vin;
-  if (vin.length === 17 && vin != /^[a-z]+$/g) {
+  if (vin.length === 17 && vin != /^[a-z]+$/) {
     next();
   } else {
     res.status(400).json({
